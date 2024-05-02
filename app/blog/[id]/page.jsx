@@ -104,8 +104,8 @@ const BlogDetails = ({ params }) => {
 
         if (res?.status === 200) {
           await deletePhoto(imageId);
-          router.refresh();
           router.push("/blog");
+          router.refresh();
         }
       }
 
@@ -214,8 +214,7 @@ const BlogDetails = ({ params }) => {
   };
 
   return (
-    <section className="container max-w-3xl ">
-      {/* edit and delete icon rendered for the author  */}
+    <section className="container max-w-3xl mt-12 ">
       {blogDetails?.authorId?._id.toString() ===
         session?.user?._id.toString() && (
         <div className="flex items-center justify-end gap-5">
@@ -258,23 +257,27 @@ const BlogDetails = ({ params }) => {
           <h2>{blogDetails?.title}</h2>
           <p>{blogDetails?.excerpt}...</p>
           <p className="flex item-center justify-center gap-3">
-            <span className="text-primaryColor">{blogDetails?.category}</span>
+            <span className=" text-primaryColor">{blogDetails?.category}</span>
             <span className="flex items-center gap-1">
               <AiTwotoneCalendar />
               {formattedTime}
             </span>
           </p>
 
-          <div>
-            <Image
-              src={blogDetails?.image ? blogDetails?.image?.url : noImage}
-              alt="blog-details-image"
-              width={0}
-              height={0}
-              sizes="100vw"
-              className="w-full h-full rounded-xl py-10"
-            />
-          </div>
+          {blogDetails?.image ? (
+            <>
+              <Image
+                src={blogDetails?.image ? blogDetails?.image?.url : noImage}
+                alt="blog-details-image"
+                width={0}
+                height={0}
+                sizes="100vw"
+                className="w-full h-full rounded-xl py-10"
+              />
+            </>
+          ) : (
+            <></>
+          )}
 
           <div className="text-start">
             <div className="space-y-5">
@@ -324,55 +327,69 @@ const BlogDetails = ({ params }) => {
         </div>
       </div>
 
-      <div>
+      <div className="comment-form">
         {!session?.user && (
-          <h3 className="text-red-400 font-extralight text-xs">
+          <h3 className="text-primaryColor font-extralight text-xs">
             kindly login to leave a comment.
           </h3>
         )}
 
         {session?.user && (
-          <form onSubmit={handleCommentSubmit} className="space-y-2">
+          <form
+            onSubmit={handleCommentSubmit}
+            className="flex justify-between items-center gap-4"
+          >
             <Input
               onChange={(e) => setCommentText(e.target.value)}
               value={commentText}
               name="comment"
               type="text"
               placeholder="Type message"
+              className="rounded-l-xl"
             />
-            <button type="submit" className="btn">
+            <button
+              type="submit"
+              className="text-white bg-primaryColor px-3 py-3 rounded-xl"
+            >
               {isCommenting ? "Loading..." : "Comment"}
             </button>
           </form>
         )}
 
         {blogDetails?.comments && blogDetails?.comments.length === 0 && (
-          <p>no comments</p>
+          <h2 className="pt-12 text-center">no comments...</h2>
         )}
 
         {blogDetails?.comments && blogDetails?.comments.length > 0 && (
           <>
             {blogDetails.comments.map((c) => (
-              <div key={c._id} className="flex gap-3 py-5 items-center">
-                <Image
-                  src={c?.user?.avatar?.url ? c?.user?.avatar?.url : demoImage}
-                  alt="avatar "
-                  width={0}
-                  height={0}
-                  sizes={"100vw"}
-                  className="w-10 h-10 rounded-full"
-                />
+              <div
+                key={c._id}
+                className="flex gap-3 py-5 items-center  justify-between"
+              >
+                <div className="user-comment flex gap-5">
+                  <Image
+                    src={
+                      c?.user?.avatar?.url ? c?.user?.avatar?.url : demoImage
+                    }
+                    alt="avatar "
+                    width={0}
+                    height={0}
+                    sizes={"100vw"}
+                    className="w-10 h-10 rounded-full"
+                  />
 
-                <div>
-                  <p className="text-whiteColor">{c?.user?.name}</p>
-                  <p>{c.text}</p>
+                  <div>
+                    <p className="text-whiteColor">{c?.user?.name}</p>
+                    <p>{c.text}</p>
+                  </div>
                 </div>
 
                 {session?.user?._id === c?.user?._id && (
                   <BsTrash
                     onClick={() => handleCommentDelete(c._id)}
                     cursor="pointer"
-                    className="text-red-500 ml-10"
+                    className="text-red-500 ml-10 "
                   />
                 )}
               </div>

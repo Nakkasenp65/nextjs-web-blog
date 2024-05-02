@@ -14,21 +14,27 @@ const OtherBlogs = ({ otherBlogs }) => {
   };
 
   return (
-    <section className="px-20 py-10">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+    <section className="px-20 py-10 grid ">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 p-2 ">
         {otherBlogs?.length > 0 &&
           otherBlogs?.map((item, index) => (
-            <div key={index}>
+            <div key={index} className="p-2 rounded-2xl">
               <Link href={`/blog/${item?._id}`}>
                 <div>
-                  <Image
-                    src={item?.image ? item.image?.url : demoImage}
-                    alt="blog image"
-                    width={0}
-                    height={0}
-                    sizes="100vw"
-                    className="w-full h-full rounded-lg mb-2"
-                  />
+                  {item?.image ? (
+                    <>
+                      <Image
+                        src={item?.image ? item.image?.url : demoImage}
+                        alt="blog image"
+                        width={0}
+                        height={0}
+                        sizes="100vw"
+                        className="w-full h-full rounded-2xl mb-2"
+                      />
+                    </>
+                  ) : (
+                    <></>
+                  )}
 
                   <div className="space-y-2">
                     <div className="flex items-center gap-3 text-xs">
@@ -47,7 +53,7 @@ const OtherBlogs = ({ otherBlogs }) => {
                       </p>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3   ">
                       <Image
                         src={
                           item?.authorId?.avatar?.url

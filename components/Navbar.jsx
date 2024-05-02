@@ -33,20 +33,20 @@ const Navbar = () => {
 
   return (
     <div className="fixed w-full flex justify-end xs:justify-between py-2 px-4 h-16 items-center bg-stone-900 top-0 ">
-      <Link href={"/"} className="">
-        <h2 className="website-title xs:text-base sm:text-2xl md:text-4xl ">
+      <Link href={"/"} className="website-title">
+        <h2 className="xs:text-base sm:text-2xl md:text-4xl ">
           Write
           <span className="special-word">Blog</span>
         </h2>
       </Link>
 
-      <ul className=" flex items-center gap-3 sm:gap-8 ">
+      <ul className=" flex  items-center gap-3 sm:gap-8 ">
         <li>
           <Link
             href={"/blog"}
             className={
               pathName === "/blog"
-                ? " ease-in-out duration-500 text-primaryColor font-bold"
+                ? "ease-in-out duration-500 text-primaryColor font-bold"
                 : "ease-in-out duration-500 hover:font-bold"
             }
           >
@@ -87,10 +87,10 @@ const Navbar = () => {
                 </div>
 
                 {showDropDown && (
-                  <div className="absolute text-sm flex flex-col justify-between items-center top-0 right-0 bg-stone-800 p-4 gap-2 w-32 rounded-xl">
+                  <div className="absolute text-sm flex flex-col justify-between items-center top-0 right-0 bg-stone-800 w-32 rounded-xl">
                     <div
                       onClick={handleShowDropDown}
-                      className="ease-in-out duration-500 hover:bold hover:scale-125 w-full cursor-pointer flex justify-center items-center border-stone-300 "
+                      className="ease-in-out duration-300 hover:bg-stone-700 hover:rounded-t-xl w-full cursor-pointer flex justify-center items-center border-stone-300 py-4 "
                     >
                       Close
                     </div>
@@ -100,7 +100,7 @@ const Navbar = () => {
                         signOut();
                         handleShowDropDown();
                       }}
-                      className="ease-in-out duration-500 hover:bold hover:scale-125 "
+                      className="ease-in-out duration-300 hover:bg-stone-700 w-full text-center py-4 "
                     >
                       Logout
                     </button>
@@ -108,7 +108,7 @@ const Navbar = () => {
                     <Link
                       onClick={handleShowDropDown}
                       href={`/user/${session?.user?._id.toString()}`}
-                      className="ease-in-out duration-500 hover:bold hover:scale-125 "
+                      className="ease-in-out duration-300 hover:bg-stone-700 hover:rounded-b-xl w-full text-center py-4 "
                     >
                       Profile
                     </Link>
@@ -123,7 +123,9 @@ const Navbar = () => {
               <Link
                 href={"/login"}
                 className={
-                  pathName === "/login" ? "text-primaryColor font-bold" : ""
+                  pathName === "/login"
+                    ? "text-primaryColor ease-in-out duration-500 hover:font-bold"
+                    : "ease-in-out duration-500 hover:font-bold"
                 }
               >
                 Log In
@@ -133,7 +135,9 @@ const Navbar = () => {
               <Link
                 href={"/signup"}
                 className={
-                  pathName === "/signup" ? "text-primaryColor font-bold" : ""
+                  pathName === "/signup"
+                    ? "text-primaryColor ease-in-out duration-500 hover:font-bold"
+                    : "ease-in-out duration-500 hover:font-bold"
                 }
               >
                 Sign Up

@@ -37,7 +37,6 @@ export async function GET(req) {
         select: "-password",
       })
       .sort({ createdAt: -1 });
-
     return NextResponse.json(blogs);
   } catch (error) {
     return NextResponse.json(

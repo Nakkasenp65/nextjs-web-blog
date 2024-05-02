@@ -26,10 +26,11 @@ const EditBlog = ({ params }) => {
   const UPLOAD_PRESET = "nextjs_blog_images";
 
   const [state, setState] = useState(initialState);
+
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  console.log(state);
+
   const router = useRouter();
   const { data: session, status } = useSession();
 
@@ -64,11 +65,11 @@ const EditBlog = ({ params }) => {
   }, [params.id]);
 
   if (status === "loading") {
-    return <p>loading...</p>;
+    return <h2>loading...</h2>;
   }
 
   if (status === "unauthenticated") {
-    return <p>Access denied</p>;
+    return <h2>Access denied</h2>;
   }
 
   const handleChange = (event) => {
@@ -210,7 +211,7 @@ const EditBlog = ({ params }) => {
   };
 
   return (
-    <section className="container max-w-3xl">
+    <section className="container max-w-3xl mt-12">
       <h2 className="mb-5">
         <span className="special-word">Edit</span> Blog
       </h2>
@@ -260,11 +261,11 @@ const EditBlog = ({ params }) => {
             value={state.category}
             className="block rounded-lg w-full p-3 bg-primaryColorLight"
           >
-            <option value="Songbirds">Songbirds</option>
-            <option value="Waterfowl">Waterfowl</option>
-            <option value="Parrots">Parrots</option>
-            <option value="Seabirds">Seabirds</option>
-            <option value="Gamebirds">Gamebirds</option>
+            <option value="Tech">Tech</option>
+            <option value="Entertainment">Entertainment</option>
+            <option value="Sports">Sports</option>
+            <option value="Health">Health</option>
+            <option value="Animals">Animals</option>
           </select>
         </div>
 

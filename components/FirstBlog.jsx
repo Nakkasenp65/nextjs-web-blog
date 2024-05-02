@@ -13,17 +13,23 @@ const FirstBlog = ({ firstBlog }) => {
   return (
     <section className="px-20 py-10 ">
       <Link href={`/blog/${firstBlog?._id}`}>
-        <div className="flex flex-col md:flex-row items-center gap-8">
-          <div className="w-full lg:w-2/5">
-            <Image
-              src={firstBlog?.image ? firstBlog.image?.url : demoImage}
-              alt="first blog image"
-              width={0}
-              height={0}
-              sizes="100vw"
-              className="w-full h-full rounded-2xl shadow-black shadow-lg"
-            />
-          </div>
+        <div className="flex flex-col lg:flex-row items-center gap-8">
+          {firstBlog?.image ? (
+            <>
+              <div className="w-full lg:w-2/5">
+                <Image
+                  src={firstBlog?.image ? firstBlog.image?.url : demoImage}
+                  alt="first blog image"
+                  width={0}
+                  height={0}
+                  sizes="100vw"
+                  className="w-full h-full rounded-2xl shadow-black shadow-lg"
+                />
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
 
           <div className="w-full lg:w-3/5 space-y-5">
             <div className="flex items-center gap-3 text-xs">
