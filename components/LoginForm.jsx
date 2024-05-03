@@ -45,7 +45,6 @@ const LoginForm = () => {
       return;
     }
 
-    // Regular expression pattern for a basic email validation
     const pattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
     if (!pattern.test(email)) {
@@ -82,10 +81,10 @@ const LoginForm = () => {
   };
 
   return (
-    <section className="container mt-40 mb-56 h-96 ">
+    <section className="container flex justify-center items-center h-[calc(100vh-5rem)]">
       <form
         action=""
-        className="border-2 border-paragraphColor rounded-2xl max-w-sm mx-auto px-8 py-6 space-y-5"
+        className="border-2 border-paragraphColor rounded-2xl max-w-sm my-auto mx-auto p-8 space-y-5"
         onSubmit={handleSubmit}
       >
         <h2 className="text-center special-word">Log in</h2>

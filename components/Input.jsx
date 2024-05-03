@@ -11,7 +11,7 @@ const Input = ({ type, value, onChange, name, label, placeholder }) => {
         onChange={onChange}
         name={name}
         placeholder={placeholder}
-        className="w-full bg-primaryColorLight py-3 px-4 rounded-xl"
+        className="w-full bg-componentColor py-3 px-4 rounded-xl"
       />
     </div>
   );

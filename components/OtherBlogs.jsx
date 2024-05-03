@@ -14,7 +14,7 @@ const OtherBlogs = ({ otherBlogs }) => {
   };
 
   return (
-    <section className="px-20 py-10 grid ">
+    <section className="px-8 sm:px-12 py-10 grid ">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 p-2 ">
         {otherBlogs?.length > 0 &&
           otherBlogs?.map((item, index) => (
@@ -47,8 +47,10 @@ const OtherBlogs = ({ otherBlogs }) => {
                     </div>
 
                     <div className="space-y-2">
-                      <h2>{item?.title}</h2>
-                      <p className="text-sm text-paragraphColor">
+                      <h2 className="text-sm sm:text-xl md:text-2xl">
+                        {item?.title}
+                      </h2>
+                      <p className="text-xs text-paragraphColor">
                         {item?.excerpt}
                       </p>
                     </div>

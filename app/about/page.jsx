@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const About = () => {
   return (
-    <div className="w-full flex flex-col md:flex md:flex-row md:items-center md:text-end md:h-screen gap-4 p-20 ">
+    <div className="w-full flex flex-col md:flex md:flex-row md:items-center md:text-end  gap-4 p-20 md:h-screen">
       <h1 className="text-2xl md:text-4xl md:flex-1 border-stone-600 md:border-r md:pr-5">
         Welcome to Write
         <Link

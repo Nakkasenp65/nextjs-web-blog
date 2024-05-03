@@ -88,10 +88,10 @@ const SignupForm = () => {
   };
 
   return (
-    <section className="container">
+    <section className="container flex justify-center items-center h-[calc(100vh-5rem)]">
       <form
         action=""
-        className="border-2 border-paragraphColor rounded-2xl max-w-sm mx-auto px-8 py-6 space-y-5"
+        className="border-2 border-paragraphColor rounded-2xl max-w-sm my-auto mx-auto p-8 space-y-5"
         onSubmit={handleSubmit}
       >
         <h2 className="text-center special-word">Sign up</h2>

@@ -1,22 +1,17 @@
-import Image from "next/image";
 import Link from "next/link";
-import home_bird from "@/public/home_bird.png";
 import { FcGraduationCap } from "react-icons/fc";
 
 export default function Home() {
   return (
-    <div className="container flex flex-col md:flex-row gap-8 h-[calc(100vh-4rem)] sm:mt-0">
+    <div className="container flex flex-col md:flex-row gap-8 h-[calc(100vh-5rem)] sm:mt-0">
       <div className="basis-full flex flex-col justify-center md:basis-2/3 gap-8">
         <p className="special-word text-xs">Unleash Your Creativity</p>
 
-        <h1 className="">
+        <h1>
           Welcome to{" "}
-          <Link
-            href={"/create-blog"}
-            className="ease-in-out duration-500 special-word cursor-pointer hover:text-6xl "
-          >
+          <span className="ease-in-out duration-500 special-word cursor-pointer hover:text-6xl">
             WriteBlog
-          </Link>
+          </span>
         </h1>
 
         <p>
@@ -29,14 +24,7 @@ export default function Home() {
       </div>
 
       <Link href={"/learn"} className="hidden md:block basis-1/3">
-        {/* <Image
-          src={home_bird}
-          alt="Home bird"
-          sizes="100vw"
-          className="ease-in-out duration-1000 w-full h-auto mt-24 hover:drop-shadow-glow hover:scale-110 hover:mt-28 cursor-pointer"
-        /> */}
-
-        <FcGraduationCap className="ease-in-out duration-500 w-full h-auto mt-52 hover:drop-shadow-glow hover:scale-110  cursor-pointer" />
+        <FcGraduationCap className="ease-in-out duration-500 w-full h-auto mt-52 hover:drop-shadow-glow hover:scale-105  cursor-pointer" />
       </Link>
     </div>
   );

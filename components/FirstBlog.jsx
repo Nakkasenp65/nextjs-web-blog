@@ -11,7 +11,7 @@ const FirstBlog = ({ firstBlog }) => {
   const formattedTime = time.format("MMMM Do YYYY");
 
   return (
-    <section className="px-20 py-10 ">
+    <section className="px-8 sm:px-12 py-10 ">
       <Link href={`/blog/${firstBlog?._id}`}>
         <div className="flex flex-col lg:flex-row items-center gap-8">
           {firstBlog?.image ? (

@@ -14,17 +14,12 @@ module.exports = {
     },
     extend: {
       colors: {
-        // primaryColor: "#f7aa1d",
-        primaryColor: "red",
-        // primaryColorLight: "#1e3133",
-        primaryColorLight: "#444444",
-        componentColor: "#44444433",
-        // secondaryColor: "#00161B",
-        // paragraphColor: "#888",
-        // whiteColor: "#d3d3d3",
-        secondaryColor: "black",
-        paragraphColor: "#dddddd",
-        whiteColor: "white",
+        componentColor: "#44444475",
+        primaryColor: "#FF1111", //The layer color
+        primaryColorLight: "#7091e611",
+        secondaryColor: "#000000", //background color
+        paragraphColor: "#eeeeee",
+        whiteColor: "#ede8f5",
       },
       boxShadow: {
         glow: "0 35px 60px -15px rgba(255, 255, 255, 0.3)",
