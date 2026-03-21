@@ -1,38 +1,51 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: "class",
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    screens: {
-      xs: "360px",
-      sm: "480px",
-      md: "768px",
-      lg: "1024px",
-    },
     extend: {
       colors: {
-        componentColor: "#44444475",
-        primaryColor: "#FF1111", //The layer color
-        primaryColorLight: "#7091e611",
-        secondaryColor: "#000000", //background color
-        paragraphColor: "#eeeeee",
-        whiteColor: "#ede8f5",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+        border: "hsl(var(--border))",
+        ring: "hsl(var(--ring))",
       },
-      boxShadow: {
-        glow: "0 35px 60px -15px rgba(255, 255, 255, 0.3)",
-      },
-      dropShadow: {
-        glow: "0 25px 25px rgba(171, 171, 171, 0.3)",
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
     },
     container: {
       center: true,
       padding: {
         DEFAULT: "1rem",
-        sm: "1.5rem",
+        sm: "2rem",
+        lg: "4rem",
       },
     },
   },
