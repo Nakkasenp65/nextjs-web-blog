@@ -22,32 +22,49 @@ export default function Home() {
       const xPos = (clientX / window.innerWidth - 0.5) * 40;
       const yPos = (clientY / window.innerHeight - 0.5) * 40;
 
-      gsap.to(".parallax-layer-1", { x: xPos * 0.5, y: yPos * 0.5, duration: 1, ease: "power2.out" });
-      gsap.to(".parallax-layer-2", { x: -xPos, y: -yPos, duration: 1.2, ease: "power2.out" });
-      gsap.to(".parallax-layer-3", { x: xPos * 1.5, y: yPos * 1.5, duration: 1.5, ease: "power2.out" });
+      const layers = [
+        { selector: ".parallax-layer-1", x: xPos * 0.5, y: yPos * 0.5, duration: 1 },
+        { selector: ".parallax-layer-2", x: -xPos, y: -yPos, duration: 1.2 },
+        { selector: ".parallax-layer-3", x: xPos * 1.5, y: yPos * 1.5, duration: 1.5 }
+      ];
+
+      layers.forEach(layer => {
+        if (containerRef.current?.querySelector(layer.selector)) {
+          gsap.to(layer.selector, { 
+            x: layer.x, 
+            y: layer.y, 
+            duration: layer.duration, 
+            ease: "power2.out" 
+          });
+        }
+      });
     };
 
     window.addEventListener("mousemove", handleMouseMove);
 
     // Scroll Animations
     const ctx = gsap.context(() => {
-      gsap.from(".hero-title", {
-        y: 100,
-        opacity: 0,
-        duration: 1.2,
-        ease: "power4.out",
-        stagger: 0.2
-      });
+      if (containerRef.current?.querySelector(".hero-title")) {
+        gsap.from(".hero-title", {
+          y: 100,
+          opacity: 0,
+          duration: 1.2,
+          ease: "power4.out",
+          stagger: 0.2
+        });
+      }
 
-      gsap.to(".floating-card", {
-        y: -50,
-        scrollTrigger: {
-          trigger: ".hero-section",
-          start: "top top",
-          end: "bottom top",
-          scrub: 1
-        }
-      });
+      if (containerRef.current?.querySelector(".floating-card")) {
+        gsap.to(".floating-card", {
+          y: -50,
+          scrollTrigger: {
+            trigger: ".hero-section",
+            start: "top top",
+            end: "bottom top",
+            scrub: 1
+          }
+        });
+      }
     }, containerRef);
 
     return () => {
@@ -182,7 +199,7 @@ export default function Home() {
             {/* Big Feature Card */}
             <motion.div 
               whileHover={{ y: -10 }}
-              className="md:col-span-7 rounded-[3rem] glassmorphism p-12 border border-border/50 shadow-2xl relative overflow-hidden group flex flex-col justify-between"
+              className="floating-card md:col-span-7 rounded-[3rem] glassmorphism p-12 border border-border/50 shadow-2xl relative overflow-hidden group flex flex-col justify-between"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="relative z-10">

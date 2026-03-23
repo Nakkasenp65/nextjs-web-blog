@@ -66,6 +66,9 @@ const BlogDetails = (props: { params: Promise<{ id: string }> }) => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  if (isBlogLoading) return <div className="container max-w-3xl mt-12 text-center">Loading...</div>;
+  if (!blogDetails) return <div className="container max-w-3xl mt-12 text-center">Blog not found.</div>;
+
   const timeStr = blogDetails?.createdAt;
   const time = moment(timeStr);
   const formattedTime = time.format("MMMM Do YYYY");
@@ -116,8 +119,6 @@ const BlogDetails = (props: { params: Promise<{ id: string }> }) => {
   };
 
   const isAuthor = (blogDetails?.authorId as any)?._id?.toString() === session?.user?._id?.toString();
-
-  if (isBlogLoading) return <div className="container max-w-3xl mt-12 text-center">Loading...</div>;
 
   return (
     <section className="container max-w-3xl mt-12 ">
