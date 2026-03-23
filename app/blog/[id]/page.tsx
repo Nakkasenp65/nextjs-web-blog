@@ -1,9 +1,8 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, use } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { deletePhoto } from "@/actions/uploadActions";
-import { getBlogById, likeBlog, addComment, deleteComment, deleteBlog as deleteBlogAction } from "@/actions/blogActions";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -14,13 +13,12 @@ import Input from "@/components/Input";
 import EditButton from "@/components/EditButton";
 
 import {
-  AiFillDelete,
   AiFillHeart,
   AiOutlineComment,
   AiOutlineHeart,
   AiTwotoneCalendar,
 } from "react-icons/ai";
-import { BsFillPencilFill, BsTrash } from "react-icons/bs";
+import { BsTrash } from "react-icons/bs";
 
 function splitParagraph(paragraph: string) {
   const MIN_LENGTH = 280;
@@ -50,143 +48,102 @@ function splitParagraph(paragraph: string) {
   return paragraphs;
 }
 
-const BlogDetails = ({ params }: { params: { id: string } }) => {
-  const [blogDetails, setBlogDetails] = useState<any>({});
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
-  const [blogLikes, setBlogLikes] = useState(0);
+import { useGetBlogById } from "@/hooks/queries/useGetBlogById";
+import { useLikeBlog, useAddComment, useDeleteComment, useDeleteBlog } from "@/hooks/mutations/useBlogMutations";
+
+const BlogDetails = (props: { params: Promise<{ id: string }> }) => {
+  const params = use(props.params);
+  const router = useRouter();
+  const { data: session }: any = useSession();
+
+  const { data: blogDetails, isLoading: isBlogLoading } = useGetBlogById(params.id);
+  const likeMutation = useLikeBlog();
+  const commentMutation = useAddComment();
+  const deleteCommentMutation = useDeleteComment();
+  const deleteBlogMutation = useDeleteBlog();
 
   const [commentText, setCommentText] = useState("");
-  const [isCommenting, setIsCommenting] = useState(false);
-  const [blogComments, setBlogComments] = useState(0);
-
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
-  const router = useRouter();
-  //login session
-  const { data: session, status }: any = useSession();
-
-  async function fetchBlog() {
-    try {
-      const blog = await getBlogById(params.id);
-      setBlogDetails(blog);
-      setIsLiked(blog?.likes?.includes(session?.user?._id));
-      setBlogLikes(blog?.likes?.length || 0);
-      setBlogComments(blog?.comments?.length || 0);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  useEffect(() => {
-    if (status !== "loading") {
-      fetchBlog();
-    }
-  }, [status, params.id]);
 
   const timeStr = blogDetails?.createdAt;
   const time = moment(timeStr);
   const formattedTime = time.format("MMMM Do YYYY");
 
-  const handleBlogDelete = async (imageId: string) => {
-    try {
-      const confirmModal = window.confirm(
-        "Are you sure you want to delete your blog?"
-      );
-
-      if (confirmModal) {
-        setIsDeleting(true);
-        await deleteBlogAction(params.id);
-        if (imageId) {
-           await deletePhoto(imageId);
+  const handleBlogDelete = async (imageId?: string) => {
+    const confirmModal = window.confirm("Are you sure you want to delete your blog?");
+    if (confirmModal) {
+      deleteBlogMutation.mutate(params.id, {
+        onSuccess: async () => {
+          if (imageId) await deletePhoto(imageId);
+          router.push("/blog");
         }
-        router.push("/blog");
-        router.refresh();
-      }
-      setIsDeleting(false);
-    } catch (error) {
-      console.log(error);
-      setIsDeleting(false);
+      });
     }
   };
 
-  const handleLike = async () => {
+  const handleLike = () => {
     if (!session?.user) {
       alert("Please login to like the blog");
       return;
     }
-
-    try {
-      await likeBlog(params.id, session.user._id);
-      setIsLiked((prev) => !prev);
-      setBlogLikes((prev) => (isLiked ? prev - 1 : prev + 1));
-    } catch (error) {
-      console.log(error);
-    }
+    likeMutation.mutate({ blogId: params.id, userId: session.user._id });
   };
 
-  const handleCommentSubmit = async (e: React.FormEvent) => {
+  const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!commentText) {
       setError("comment text is required.");
       return;
     }
 
-    try {
-      setIsCommenting(true);
-      setError("");
-
-      await addComment(params.id, session.user._id, commentText);
-
-      setSuccess("Comment created successfully.");
-      setTimeout(() => {
-        setCommentText("");
-        fetchBlog();
-      }, 500);
-    } catch (error) {
-      console.log(error);
-      setError("Error occurred while creating comment.");
-    } finally {
-      setIsCommenting(false);
-    }
+    setError("");
+    commentMutation.mutate(
+      { blogId: params.id, userId: session.user._id, text: commentText },
+      {
+        onSuccess: () => {
+          setSuccess("Comment created successfully.");
+          setCommentText("");
+          setTimeout(() => setSuccess(""), 3000);
+        },
+        onError: () => setError("Error occurred while creating comment.")
+      }
+    );
   };
 
-  const handleCommentDelete = async (commentId: string) => {
-    try {
-      await deleteComment(params.id, commentId);
-      fetchBlog();
-    } catch (error) {
-      console.log(error);
-    }
+  const handleCommentDelete = (commentId: string) => {
+    deleteCommentMutation.mutate({ blogId: params.id, commentId });
   };
+
+  const isAuthor = (blogDetails?.authorId as any)?._id?.toString() === session?.user?._id?.toString();
+
+  if (isBlogLoading) return <div className="container max-w-3xl mt-12 text-center">Loading...</div>;
 
   return (
     <section className="container max-w-3xl mt-12 ">
-      {blogDetails?.authorId?._id?.toString() ===
-        session?.user?._id?.toString() && (
+      {isAuthor && (
         <div className="flex items-center justify-end gap-5">
           <EditButton id={params.id} />
 
           <button
             onClick={() => handleBlogDelete(blogDetails?.image?.id)}
-            className="flex items-center gap-1 text-red-500"
+            disabled={deleteBlogMutation.isPending}
+            className="flex items-center gap-1 text-red-500 disabled:opacity-50"
           >
             <BsTrash />
-            {isDeleting ? "Deleting..." : "Delete"}
+            {deleteBlogMutation.isPending ? "Deleting..." : "Delete"}
           </button>
         </div>
       )}
 
       <div className="flex flex-col items-center justify-center">
-        {blogDetails?.authorId?._id && (
-          <Link href={`/user/${blogDetails?.authorId?._id.toString()}`}>
+        {(blogDetails?.authorId as any)?._id && (
+          <Link href={`/user/${(blogDetails?.authorId as any)?._id.toString()}`}>
             <div className="flex flex-col justify-center items-center py-10">
               <Image
                 src={
-                  blogDetails?.authorId?.avatar?.url
-                    ? blogDetails?.authorId?.avatar?.url
+                  (blogDetails?.authorId as any)?.avatar?.url
+                    ? (blogDetails?.authorId as any)?.avatar?.url
                     : demoImage
                 }
                 alt=""
@@ -197,8 +154,8 @@ const BlogDetails = ({ params }: { params: { id: string } }) => {
               />
 
               <div className="text-center">
-                <p className="text-whiteColor">{blogDetails?.authorId?.name}</p>
-                <p>{blogDetails?.authorId?.designation}</p>
+                <p className="text-whiteColor">{(blogDetails?.authorId as any)?.name}</p>
+                <p>{(blogDetails?.authorId as any)?.designation}</p>
               </div>
             </div>
           </Link>
@@ -218,7 +175,7 @@ const BlogDetails = ({ params }: { params: { id: string } }) => {
           {blogDetails?.image ? (
             <>
               <Image
-                src={blogDetails?.image ? blogDetails?.image?.url : noImage}
+                src={blogDetails?.image?.url || noImage}
                 alt="blog-details-image"
                 width={0}
                 height={0}
@@ -257,8 +214,8 @@ const BlogDetails = ({ params }: { params: { id: string } }) => {
       <div className="py-12">
         <div className="flex gap-10 items-center text-xl justify-center">
           <div className="flex items-center gap-1">
-            <p>{blogLikes}</p>
-            {isLiked ? (
+            <p>{blogDetails?.likes?.length || 0}</p>
+            {blogDetails?.likes?.includes(session?.user?._id) ? (
               <AiFillHeart
                 onClick={handleLike}
                 size={20}
@@ -271,7 +228,7 @@ const BlogDetails = ({ params }: { params: { id: string } }) => {
           </div>
 
           <div className="flex items-center gap-1">
-            <p>{blogComments}</p>
+            <p>{blogDetails?.comments?.length || 0}</p>
 
             <AiOutlineComment size={20} />
           </div>
@@ -300,9 +257,10 @@ const BlogDetails = ({ params }: { params: { id: string } }) => {
             />
             <button
               type="submit"
-              className="text-white bg-primaryColor px-3 py-3 rounded-xl"
+              disabled={commentMutation.isPending}
+              className="text-white bg-primaryColor px-3 py-3 rounded-xl disabled:opacity-50"
             >
-              {isCommenting ? "Loading..." : "Comment"}
+              {commentMutation.isPending ? "Loading..." : "Comment"}
             </button>
           </form>
         )}

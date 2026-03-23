@@ -9,34 +9,34 @@ import {
   User, 
   Mail, 
   MapPin, 
-  Briefcase, 
   Calendar, 
   Edit3, 
   Camera, 
   X,
   Loader2,
   Heart,
-  MessageSquare,
-  FileText
+  MessageSquare
 } from "lucide-react";
 
 import Modal from "@/components/Modal";
 import { deletePhoto } from "@/actions/uploadActions";
-import { updateUser } from "@/actions/userActions";
 import Input from "@/components/Input";
 import demoImage from "@/public/demo_image.png";
+
+import { useUpdateUser } from "@/hooks/mutations/useUserMutations";
 
 const ProfileDetails = ({ profile, params }: { profile: any; params: { id: string } }) => {
   const [profileToEdit, setProfileToEdit] = useState(profile);
   const [avatarToEdit, setAvatarToEdit] = useState<File | "">("");
   const [openModalEdit, setOpenModalEdit] = useState(false);
 
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
   const { data: session }: any = useSession();
   const router = useRouter();
+
+  const updateUserMutation = useUpdateUser();
 
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,7 +57,6 @@ const ProfileDetails = ({ profile, params }: { profile: any; params: { id: strin
     }
 
     try {
-      setIsLoading(true);
       setError("");
       setSuccess("");
 
@@ -83,16 +82,21 @@ const ProfileDetails = ({ profile, params }: { profile: any; params: { id: strin
         avatar: profileImage,
       };
 
-      await updateUser(params.id, updateUserData);
-      setSuccess("Profile updated successfully!");
-      setTimeout(() => setOpenModalEdit(false), 1500);
+      updateUserMutation.mutate(
+        { id: params.id, data: updateUserData },
+        {
+          onSuccess: () => {
+            setSuccess("Profile updated successfully!");
+            setTimeout(() => setOpenModalEdit(false), 1500);
+          },
+          onError: () => setError("Failed to update profile.")
+        }
+      );
     } catch (error) {
       console.log(error);
       setError("Failed to update profile.");
     } finally {
-      setIsLoading(false);
       setAvatarToEdit("");
-      router.refresh();
     }
   };
 
@@ -363,11 +367,11 @@ const ProfileDetails = ({ profile, params }: { profile: any; params: { id: strin
 
           <div className="flex gap-4 pt-2">
             <button
-              disabled={isLoading}
+              disabled={updateUserMutation.isPending}
               type="submit"
-              className="flex-1 btn-primary disabled:opacity-50 h-12 rounded-2xl"
+              className="flex-1 btn-primary disabled:opacity-50 h-12 rounded-2xl flex items-center justify-center"
             >
-              {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Save Changes"}
+              {updateUserMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : "Save Changes"}
             </button>
             <button
               type="button"

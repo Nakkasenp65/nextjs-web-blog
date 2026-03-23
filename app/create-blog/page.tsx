@@ -12,14 +12,14 @@ import {
   Loader2, 
   Type, 
   Quote, 
-  AlignLeft, 
   Hash,
   Sparkles,
   Info
 } from "lucide-react";
 
-import { createBlog } from "@/actions/blogActions";
 import demoImage from "@/public/demo_image.jpg";
+
+import { useCreateBlog } from "@/hooks/mutations/useBlogMutations";
 
 const CreateBlog = () => {
   const [state, setState] = useState({
@@ -33,12 +33,13 @@ const CreateBlog = () => {
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
 
   const router = useRouter();
   const { data: session, status }: any = useSession();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const createBlogMutation = useCreateBlog();
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -85,7 +86,6 @@ const CreateBlog = () => {
     }
 
     try {
-      setIsLoading(true);
       setError("");
       
       let image = null;
@@ -106,13 +106,15 @@ const CreateBlog = () => {
         authorId: session?.user?._id,
       };
 
-      await createBlog(newBlog);
-      setSuccess("Your story has been published!");
-      setTimeout(() => router.push("/blog"), 1500);
+      createBlogMutation.mutate(newBlog, {
+        onSuccess: () => {
+          setSuccess("Your story has been published!");
+          setTimeout(() => router.push("/blog"), 1500);
+        },
+        onError: () => setError("An error occurred during publication.")
+      });
     } catch (error) {
       setError("An error occurred during publication.");
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -261,10 +263,10 @@ const CreateBlog = () => {
               
               <button 
                 onClick={handleSubmit}
-                disabled={isLoading}
+                disabled={createBlogMutation.isPending}
                 className="w-full btn-primary h-14 rounded-2xl flex items-center justify-center gap-3 text-base font-black shadow-xl shadow-primary/30 active:scale-95 disabled:opacity-50 transition-all mb-4"
               >
-                {isLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : (
+                {createBlogMutation.isPending ? <Loader2 className="w-6 h-6 animate-spin" /> : (
                   <>
                     Publish Now
                     <Send className="w-4 h-4" />
@@ -286,7 +288,7 @@ const CreateBlog = () => {
                 <motion.div 
                   initial={{ opacity: 0, scale: 0.9 }} 
                   animate={{ opacity: 1, scale: 1 }} 
-                  className="p-4 rounded-xl bg-green-500/10 border border-green-500/20 text-green-500 text-[10px] font-black text-center uppercase tracking-widest italic mb-4"
+                  className="p-4 rounded-xl bg-green-500/10 border border-red-500/20 text-green-500 text-[10px] font-black text-center uppercase tracking-widest italic mb-4"
                 >
                   {success}
                 </motion.div>

@@ -10,3 +10,9 @@ export async function updateUser(id: string, data: any) {
   revalidatePath(`/user/${id}`);
   return JSON.parse(JSON.stringify(updatedUser));
 }
+
+export async function getUserById(id: string) {
+  await connect();
+  const user = await User.findById(id).select("-password").lean();
+  return JSON.parse(JSON.stringify(user));
+}

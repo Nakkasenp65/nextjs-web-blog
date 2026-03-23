@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import me from "@/public/demo_image.png";
@@ -9,30 +9,16 @@ import { IUser } from "@/types";
 import { ThemeToggle } from "./ThemeToggle";
 import { User, LogOut, PenSquare, BookOpen, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useGetUser } from "@/hooks/queries/useGetUser";
 
 const Navbar = () => {
-  const [userData, setUserData] = useState<IUser | null>(null);
   const { data: session } = useSession();
 
   const pathName = usePathname();
   const [showDropDown, setShowDropDown] = React.useState(false);
   const handleShowDropDown = () => setShowDropDown(!showDropDown);
 
-  useEffect(() => {
-    async function fetchUser() {
-      if (!session?.user?._id) return;
-      try {
-        const res = await fetch(`/api/user/${session?.user?._id}`);
-        if (res.ok) {
-          const resData = await res.json();
-          setUserData(resData);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    fetchUser();
-  }, [session?.user?._id]);
+  const { data: userData, isLoading: isUserLoading } = useGetUser(session?.user?._id);
 
   return (
     <nav className="fixed w-full top-0 z-50 glassmorphism border-b h-16 flex items-center">

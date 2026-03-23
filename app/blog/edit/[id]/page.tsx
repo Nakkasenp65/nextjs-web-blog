@@ -1,15 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, use } from "react";
 import { useSession } from "next-auth/react";
 import Input from "@/components/Input";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import TextArea from "@/components/TextArea";
-import demoImage from "@/public/demo_image.jpg";
 import Image from "next/image";
 import { deletePhoto } from "@/actions/uploadActions";
-import { getBlogById, updateBlog } from "@/actions/blogActions";
 
 const initialState = {
   title: "",
@@ -22,48 +20,38 @@ const initialState = {
   newImage: "" as File | "",
 };
 
-const EditBlog = ({ params }: { params: { id: string } }) => {
-  const CLOUD_NAME = "dxglnyu4r"; // Ensure this matches the create-blog CLOUD_NAME
-  const UPLOAD_PRESET = "next_blog_images";
+import { useGetBlogById } from "@/hooks/queries/useGetBlogById";
+import { useUpdateBlog } from "@/hooks/mutations/useBlogMutations";
 
+const EditBlog = (props: { params: Promise<{ id: string }> }) => {
+  const params = use(props.params);
   const [state, setState] = useState(initialState);
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
   const { data: session, status }: any = useSession();
 
+  const { data: blogData, isLoading: isBlogLoading } = useGetBlogById(params.id);
+  const updateBlogMutation = useUpdateBlog();
+
   useEffect(() => {
-    //get the current blog to edit{/id}
-    async function fetchBlog() {
-      try {
-        const blogData = await getBlogById(params.id);
-
-        if (blogData) {
-          setState((prevstate) => ({
-            ...prevstate,
-            title: blogData.title,
-            description: blogData.description,
-            excerpt: blogData.excerpt,
-            quote: blogData.quote,
-            category: blogData.category,
-            photo: blogData.image,
-            blogId: blogData._id,
-          }));
-        } else {
-          setError("Error fetching blog data");
-        }
-      } catch (error) {
-        setError("Error fetching blog data");
-      }
+    if (blogData) {
+      setState((prevstate) => ({
+        ...prevstate,
+        title: blogData.title,
+        description: blogData.description,
+        excerpt: blogData.excerpt,
+        quote: blogData.quote,
+        category: blogData.category,
+        photo: blogData.image,
+        blogId: blogData._id as string,
+      }));
     }
+  }, [blogData]);
 
-    fetchBlog();
-  }, [params.id]);
-
-  if (status === "loading") {
+  if (status === "loading" || isBlogLoading) {
     return <h2>loading...</h2>;
   }
 
@@ -121,7 +109,6 @@ const EditBlog = ({ params }: { params: { id: string } }) => {
     }
 
     try {
-      setIsLoading(true);
       setError("");
       setSuccess("");
 
@@ -145,18 +132,21 @@ const EditBlog = ({ params }: { params: { id: string } }) => {
         authorId: session?.user?._id,
       };
 
-      await updateBlog(params.id, updateBlogData);
-
-      setSuccess("Blog updated successfully.");
-      setTimeout(() => {
-        router.refresh();
-        router.push(`/blog/${params.id}`);
-      }, 1500);
+      updateBlogMutation.mutate(
+        { id: params.id, data: updateBlogData },
+        {
+          onSuccess: () => {
+            setSuccess("Blog updated successfully.");
+            setTimeout(() => {
+              router.push(`/blog/${params.id}`);
+            }, 1500);
+          },
+          onError: () => setError("Error occurred while updating blog.")
+        }
+      );
     } catch (error) {
       console.log(error);
       setError("Error occurred while updating blog.");
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -286,8 +276,8 @@ const EditBlog = ({ params }: { params: { id: string } }) => {
 
         {success && <div className="text-green-700">{success}</div>}
 
-        <button type="submit" className="btn">
-          {isLoading ? "Loading..." : "Edit"}
+        <button type="submit" disabled={updateBlogMutation.isPending} className="btn">
+          {updateBlogMutation.isPending ? "Loading..." : "Edit"}
         </button>
       </form>
     </section>

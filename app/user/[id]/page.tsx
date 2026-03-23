@@ -10,7 +10,8 @@ async function getUserData(id: string) {
   return JSON.parse(JSON.stringify(user));
 }
 
-const UserProfile = async ({ params }: { params: { id: string } }) => {
+const UserProfile = async (props: { params: Promise<{ id: string }> }) => {
+  const params = await props.params;
   const profile = await getUserData(params.id);
   return (
     <div>

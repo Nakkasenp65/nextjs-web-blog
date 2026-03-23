@@ -51,3 +51,4 @@ next-env.d.ts
 # Project-specific
 gemini.md
 /docs
+/rules

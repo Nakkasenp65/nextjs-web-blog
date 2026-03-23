@@ -1,6 +1,42 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 1rem;
+  width: 100%;
+  @media (width >= 640px) {
+    padding-inline: 2rem;
+  }
+  @media (width >= 1024px) {
+    padding-inline: 4rem;
+  }
+}
+
+@theme {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-border: hsl(var(--border));
+  --color-ring: hsl(var(--ring));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  /* Color Aliases to support existing primaryColor and whiteColor classes */
+  --color-primaryColor: hsl(var(--primary));
+  --color-primaryColorLight: #f3f4f6;
+  --color-whiteColor: #ffffff;
+}
 
 @layer base {
   :root {
@@ -61,17 +97,31 @@
   }
   body {
     background-color: hsl(var(--background));
-    background-image: var(--bg-image);
-    background-attachment: fixed;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
     color: hsl(var(--foreground));
     transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 300ms;
     font-feature-settings: "rlig" 1, "calt" 1;
     min-height: 100vh;
+    position: relative;
+  }
+
+  /* Blurred Background Layer */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(8px); /* Adjust blur strength here */
+    transform: scale(1.1); /* Prevent white edges from blur */
+    transition: background-image 0.3s ease-in-out;
   }
 
   h1, h2, h3, h4, h5, h6 {

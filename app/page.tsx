@@ -60,7 +60,7 @@ export default function Home() {
     <div ref={containerRef} className="relative bg-transparent overflow-hidden selection:bg-primary selection:text-white">
       
       {/* Cinematic Background Blurs (Subtle to let the background image shine) */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
+      <div className="parallax-layer-1 absolute inset-0 z-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full bg-primary/5 blur-[150px] animate-pulse" />
         <div className="absolute bottom-[10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-blue-500/5 blur-[150px] opacity-50" />
       </div>
