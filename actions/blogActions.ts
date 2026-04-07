@@ -10,6 +10,15 @@ export async function getBlogById(id: string) {
   return JSON.parse(JSON.stringify(blog));
 }
 
+export async function incrementViews(blogId: string) {
+  try {
+    await connect();
+    await Blog.findByIdAndUpdate(blogId, { $inc: { views: 1 } });
+  } catch (error) {
+    console.error("Error incrementing views:", error);
+  }
+}
+
 export async function createBlog(data: any) {
   await connect();
   const newBlog = await Blog.create(data);

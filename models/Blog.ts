@@ -44,6 +44,10 @@ const BlogSchema = new mongoose.Schema(
       ref: "User",
       default: [],
     },
+    views: {
+      type: Number,
+      default: 0,
+    },
     comments: [
       {
         user: {

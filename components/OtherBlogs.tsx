@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Calendar, User, ArrowRight } from "lucide-react";
 import { IBlog, IUser } from "@/types";
 import { motion } from "framer-motion";
+import { BLUR_PLACEHOLDER } from "@/lib/constants";
 
 interface OtherBlogsProps {
   otherBlogs: (IBlog & { authorId: IUser })[];
@@ -58,6 +59,8 @@ const OtherBlogs: React.FC<OtherBlogsProps> = ({ otherBlogs }) => {
                     src={item?.image?.url || demoImage}
                     alt={item?.title}
                     fill
+                    placeholder="blur"
+                    blurDataURL={BLUR_PLACEHOLDER}
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                   <div className="absolute top-4 left-4">
@@ -88,6 +91,8 @@ const OtherBlogs: React.FC<OtherBlogsProps> = ({ otherBlogs }) => {
                       src={item?.authorId?.avatar?.url || demoImage}
                       alt={item?.authorId?.name}
                       fill
+                      placeholder="blur"
+                      blurDataURL={BLUR_PLACEHOLDER}
                       className="object-cover"
                     />
                   </div>

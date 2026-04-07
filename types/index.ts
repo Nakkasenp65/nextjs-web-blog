@@ -37,6 +37,7 @@ export interface IBlog {
   category: string;
   authorId: string | Types.ObjectId | IUser;
   likes: (string | Types.ObjectId)[];
+  views: number;
   comments: IComment[];
   createdAt?: Date;
   updatedAt?: Date;

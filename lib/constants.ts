@@ -1,0 +1,2 @@
+// 1x1 pixel grey placeholder
+export const BLUR_PLACEHOLDER = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/+F9PQAI8AKp299H6wAAAABJRU5ErkJggg==";

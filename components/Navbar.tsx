@@ -89,6 +89,9 @@ const Navbar = () => {
                 <motion.button
                   whileTap={{ scale: 0.95 }}
                   onClick={handleShowDropDown}
+                  aria-label="Open user menu"
+                  aria-expanded={showDropDown}
+                  aria-haspopup="true"
                   className="flex items-center gap-2 p-1 pl-3 rounded-full border border-border bg-muted/50 hover:bg-muted transition-colors"
                 >
                   <span className="hidden sm:inline text-sm font-medium">

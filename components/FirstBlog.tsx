@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Calendar, User, ArrowRight } from "lucide-react";
 import { IBlog, IUser } from "@/types";
 import { motion } from "framer-motion";
+import { BLUR_PLACEHOLDER } from "@/lib/constants";
 
 interface FirstBlogProps {
   firstBlog: IBlog & { authorId: IUser };
@@ -36,6 +37,8 @@ const FirstBlog: React.FC<FirstBlogProps> = ({ firstBlog }) => {
                 src={firstBlog?.image?.url || demoImage}
                 alt={firstBlog?.title}
                 fill
+                placeholder="blur"
+                blurDataURL={BLUR_PLACEHOLDER}
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-8">
@@ -71,6 +74,8 @@ const FirstBlog: React.FC<FirstBlogProps> = ({ firstBlog }) => {
                     src={firstBlog?.authorId?.avatar?.url || demoImage}
                     alt={firstBlog?.authorId?.name}
                     fill
+                    placeholder="blur"
+                    blurDataURL={BLUR_PLACEHOLDER}
                     className="object-cover"
                   />
                 </div>
